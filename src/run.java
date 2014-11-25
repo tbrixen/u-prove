@@ -1,9 +1,3 @@
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-
-
 /**
  * Created by tbrixen on 25/11/14.
  */
@@ -17,7 +11,8 @@ public class run {
         String message = "01";
 
         try {
-            System.out.println("     " + helper.hashString(message, "SHA-256"));
+            System.out.println("     " +
+                    helper.hash(new Object[] {null} ));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -5,22 +5,23 @@ import java.util.Arrays;
  * Created by tbrixen on 25/11/14.
  */
 public class Helper {
-    public static String hashString(Object[] message, String algorithm)
-            throws Exception {
+    public static byte[] hash(Object[] message)
+            {
 
+
+
+        String algorithm = "SHA-256";
 
         byte[] messageBytes = null;
-        if (message == null){
-            messageBytes = hexStringToByteArray("00000000");
-        }
+        messageBytes = hexStringToByteArray("00000000");
 
         if (message == null){
-            messageBytes = hexStringToByteArray("00000000");
+            //messageBytes = hexStringToByteArray("00000000");
         } else {
             //messageBytes = message.getBytes("UTF-8");
         }
 
-        System.out.println(Arrays.toString(messageBytes));
+        //System.out.println(Arrays.toString(messageBytes));
         //messageBytes = hexStringToByteArray("01");
 
         System.out.println(Arrays.toString(messageBytes));
@@ -30,11 +31,16 @@ public class Helper {
 
             byte[] hashedBytes = digest.digest(messageBytes);
 
-            return convertByteArrayToHexString(hashedBytes);
+            return hashedBytes;
         } catch (Exception ex) {
-            throw new Exception(
-                    "Could not generate hash from String", ex);
+            System.out.println("Error exception");
         }
+                return null;
+    }
+
+
+    public int ab(){
+        return 23;
     }
 
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
@@ -48,7 +54,8 @@ public class Helper {
 
     }
 
-    public static byte[] hexStringToByteArray(String s) {
+
+    private static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
