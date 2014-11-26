@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
@@ -5,24 +6,39 @@ import java.util.Arrays;
  * Created by tbrixen on 25/11/14.
  */
 public class Helper {
-    public static byte[] hash(Object[] message)
-            {
-
-
+    public static byte[] hash(Object[] message) {
 
         String algorithm = "SHA-256";
 
-        byte[] messageBytes = null;
-        messageBytes = hexStringToByteArray("00000000");
 
-        if (message == null){
-            //messageBytes = hexStringToByteArray("00000000");
-        } else {
-            //messageBytes = message.getBytes("UTF-8");
+
+        String toHash = "";
+        int elementCount = message.length;
+        if (elementCount > 1){
+            toHash = convertIntTo32BitHex(message.length);
         }
 
-        //System.out.println(Arrays.toString(messageBytes));
-        //messageBytes = hexStringToByteArray("01");
+        for (int i = 0; i < elementCount; i++){
+            Object element = message[i];
+
+            if (element == null){
+                toHash += "00000000";
+            } else if (element.getClass().equals(String.class)){
+                int length = ((String) message[i]).length();
+
+                String lengthPadding = "";
+                if (length > 2 ){
+                    lengthPadding = convertIntTo32BitHex(length/2);
+                }
+
+                toHash += lengthPadding + message[i];
+            }
+        }
+
+
+        byte[] messageBytes = hexStringToByteArray(toHash);
+
+        System.out.println(convertByteArrayToHexString(messageBytes));
 
         System.out.println(Arrays.toString(messageBytes));
 
@@ -35,12 +51,19 @@ public class Helper {
         } catch (Exception ex) {
             System.out.println("Error exception");
         }
-                return null;
+        return null;
     }
 
+    private static String convertIntTo32BitHex(int number){
+        String hexString = Integer.toHexString(number);
 
-    public int ab(){
-        return 23;
+        int length = hexString.length();
+        String padding = "";
+        for (int i = length; i < 8; i++) {
+            padding += "0";
+        }
+
+        return padding + hexString;
     }
 
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
