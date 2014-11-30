@@ -31,11 +31,11 @@ public class Helper {
             } else if (element.getClass().equals(Group.class)) {
                 Group gq = (Group) element;
                 String p = convertByteArrayToHexString(gq.getP().toByteArray
-                        ()).substring(2);
+                        ()).substring(2); // Remove 0's at start of string
                 String q = convertByteArrayToHexString(gq.getQ().toByteArray
-                        ()).substring(2);
+                        ()).substring(2); // Remove 0's at start of string
                 String g = convertByteArrayToHexString(gq.getGenerator()
-                        .toByteArray()).substring(2);
+                        .toByteArray()).substring(2); // Remove 0's at start of string
 
                 toHash = convertIntTo32BitHex(p.length()/2);
                 toHash += p;

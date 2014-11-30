@@ -20,6 +20,7 @@ public class run {
         };
 
         Group gq = new Group("1.3.6.1.4.1.311.75.1.1.1");
+        FieldZq fz = new FieldZq();
 
         Helper helper = new Helper();
 
@@ -31,13 +32,29 @@ public class run {
             xs[i] = helper.computeXi(gq.getQ(), e[i], A[i]);
         }
 
-        BigInteger test = new BigInteger("254666256150");
-        System.out.println(test.toByteArray().length);
+        Issuer issuer = new Issuer(xt, xs);
 
-        // Should be computed
-        BigInteger gamma = new BigInteger
-                ("67106c2e235c854e033693c6f3c64736f2bab35b5a0a3c936f2bd77a1f7bb80f9e6b98274428a73378bfc6cab2a6c4c00842448c1053c8a27b198929e3f96b5d14ddee25b8c3c27f3519e0126a7439d4fcf1d5da0ed8f79f11cc8d7ebd709f265935845cf4169e5dcae9f6025f80ac15e196e9200525e29a2419539877ceeb4a4ecbcb93669ff37ca68bd9f082ca582ddc20b4f5b3a20144f9a20dc8e0ca77d118b3c74d014f44329f643e8396616d4e55479b471381ef67025d6701348f0aa6e61740659522f92aef68c1ce2a505a61cffde2578fee82066f52bb766403ca1b0b8632b9236a87ed26fbdc8148e1ca9c9f0102df0ed7610fc0f72d89587b9967"
-                        ,16);
+        // Compute gamma
+        BigInteger g0 = issuer.getG0();
+        BigInteger gamma = g0;
+        for (int i = 1; i<=5; i++){
+            gamma = gamma.multiply(xs[0]).mod(gq.getP());
+        }
+        gamma = gamma.multiply(xt).mod(gq.getP());
+
+        Prover prover = new Prover(gamma, g0);
+
+        // Precompute for both
+        issuer.issuanceProtocolPrecompute(gamma);
+        prover.issuanceProtocalProcompute();
+
+        // We "send" the first message from issuer to the prover
+        prover.secondMessage(issuer.getSigmaZ(), issuer.getSigmaA(), issuer
+                .getSigmaB());
+
+
+
+
     }
 
     private static String convertByteArrayToHexString(byte[] arrayBytes) {
