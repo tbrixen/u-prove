@@ -8,6 +8,7 @@ public class Prover {
     BigInteger g0;
     Group gq = new Group("1.3.6.1.4.1.311.75.1.1.1");
     FieldZq zq = new FieldZq();
+    Helper helper = new Helper();
 
     // For precompute
     BigInteger h;
@@ -19,6 +20,11 @@ public class Prover {
     BigInteger alphaInverse;
 
     // For second messge
+    BigInteger sigmaZPrime;
+    BigInteger sigmaAPrime;
+    BigInteger sigmaBPrime;
+    BigInteger sigmaCPrime;
+    BigInteger sigmaC;
     public Prover(BigInteger gamma, BigInteger g0 ) {
         this.gamma = gamma;
         this.g0 = g0;
@@ -40,7 +46,26 @@ public class Prover {
 
     public void secondMessage(BigInteger sigmaZ, BigInteger sigmaA,
                               BigInteger sigmaB){
+        sigmaZPrime = sigmaZ.modPow(alpha, gq.getP());
+        sigmaAPrime = t1.multiply(sigmaA);
+
+        sigmaBPrime = sigmaZPrime.modPow(beta1, gq.getP());
+        sigmaBPrime = sigmaBPrime.multiply(t2);
+        sigmaBPrime = sigmaBPrime.multiply(sigmaB.modPow(alpha, gq.getP()));
+
+        sigmaZPrime = helper.hashToZq(new Object[] {
+                h,
+                null,
+                sigmaZPrime,
+                sigmaAPrime,
+                sigmaBPrime
+        }, gq.getQ());
+
+        sigmaC = sigmaCPrime.add(beta1.mod(gq.getQ()));
+
     }
+
+    public BigInteger getSigmaC() {return sigmaC;}
 
 
 }

@@ -52,7 +52,7 @@ public class run {
         prover.secondMessage(issuer.getSigmaZ(), issuer.getSigmaA(), issuer
                 .getSigmaB());
 
-
+        issuer.thirdMessage(prover.getSigmaC());
 
 
     }

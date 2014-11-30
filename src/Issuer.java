@@ -24,12 +24,13 @@ public class Issuer {
     // For precomp
     BigInteger sigmaA;
     BigInteger sigmaB;
+    BigInteger w;
 
+    BigInteger sigmaR;
 
     /*
      * For when issuing:
      */
-    //helper.ComputeXt("UIDp", "TI", false, "gd_d");
     public Issuer(BigInteger xt, BigInteger[] xs){
 
         group = new Group("1.3.6.1.4.1.311.75.1.1.1");
@@ -48,7 +49,7 @@ public class Issuer {
     public void issuanceProtocolPrecompute(BigInteger gamma){
         sigmaZ = gamma.modPow(y0, group.getP());
 
-        BigInteger w = zq.getRandomElement();
+        w = zq.getRandomElement();
         sigmaA = group.getGenerator().modPow(w, group.getP());
         sigmaB = gamma.modPow(w, group.getP());
     }
@@ -62,4 +63,10 @@ public class Issuer {
         return null;
     }
 
+    public void thirdMessage(BigInteger sigmaC) {
+        sigmaR = sigmaC.multiply(y0);
+        sigmaR = sigmaR.add(w).mod(group.getQ());
+
+        w = null;
+    }
 }

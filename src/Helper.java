@@ -7,7 +7,7 @@ import java.util.Arrays;
  * Created by tbrixen on 25/11/14.
  */
 public class Helper {
-    public static byte[] hash(Object[] message) {
+    public byte[] hash(Object[] message) {
 
         String algorithm = "SHA-256";
 
@@ -107,7 +107,7 @@ public class Helper {
         return null;
     }
 
-    private BigInteger hashToZq(Object[] objects, BigInteger q) {
+    public BigInteger hashToZq(Object[] objects, BigInteger q) {
         byte[] result = hash(objects);
         BigInteger r = new BigInteger(1, result);
 
