@@ -12,6 +12,11 @@ public class FieldZq {
     public BigInteger getRandomElement(){
         SecureRandom r = new SecureRandom();
         BigInteger bi = new BigInteger(q.bitLength(), r);
+
+        // Check to see if bi is < q
+        while (bi.compareTo(q) >= 0){
+            bi = new BigInteger(q.bitLength(), r);
+        }
         return bi;
     }
 }

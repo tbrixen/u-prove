@@ -184,7 +184,7 @@ public class HelperTest {
         Group group = new Group("1.3.6.1.4.1.311.75.1.1.1");
         BigInteger actual = helper.computeXt(
                 group,
-                new GroupElement(), //g
+                null, //g
                 null, // gd
                 null, //e
                 null, //s
@@ -203,8 +203,6 @@ public class HelperTest {
                     .substring(1));
         }
         return stringBuffer.toString();
-
-
     }
 
 

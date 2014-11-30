@@ -74,9 +74,8 @@ public class Helper {
         return null;
     }
 
-    public BigInteger computeXt(Group gq, GroupElement g, GroupElement gd, byte[]
+    public BigInteger computeXt(Group gq, BigInteger g, BigInteger gd, byte[]
             e, byte[] s, byte[] TI){
-        //byte[] P = hash(new Object[] {UIDd})
 
         // Fake it till you make it
         return new BigInteger
@@ -97,13 +96,9 @@ public class Helper {
             BigInteger a = new BigInteger(1, attribute);
             if (a.compareTo(q) <= 0){
                 return a;
-            } else {
-                System.out.println("Error in formatting");
             }
-        } else {
-            System.out.println("Error in formatting");
         }
-
+        System.out.println("Error in formatting");
         return null;
     }
 

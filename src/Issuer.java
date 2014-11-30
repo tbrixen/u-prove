@@ -9,7 +9,6 @@ public class Issuer {
     Group group;
     String UIDh = IssuerParameters.UIDh;
     byte[][] gs = IssuerParameters.gs;
-    GroupElement gt;
     byte[] e; // Which attributes are revealed/hidden
     byte[][] A; // The attributes
     String S; //applications specific for specification for the issuer
@@ -34,11 +33,11 @@ public class Issuer {
     public Issuer(BigInteger xt, BigInteger[] xs){
 
         group = new Group("1.3.6.1.4.1.311.75.1.1.1");
-        getGi(1);
 
         // Generate y0
         y0 = zq.getRandomElement();
         g0 = group.getGenerator().modPow(y0, group.getP());
+
 
     }
 
@@ -58,15 +57,23 @@ public class Issuer {
     public BigInteger getSigmaB(){return sigmaB;}
     public BigInteger getSigmaZ(){return sigmaZ;}
 
-    public GroupElement getGi (int i){
-        System.out.println(Arrays.toString(gs[i]));
-        return null;
-    }
-
     public void thirdMessage(BigInteger sigmaC) {
-        sigmaR = sigmaC.multiply(y0);
+        sigmaR = sigmaC.multiply(y0).mod(group.getP());
         sigmaR = sigmaR.add(w).mod(group.getQ());
 
+        // Delete w
         w = null;
     }
+
+    public BigInteger getSigmaR(){return sigmaR;}
+
+    private static String convertByteArrayToHexString(byte[] arrayBytes) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < arrayBytes.length; i++) {
+            stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16)
+                    .substring(1));
+        }
+        return stringBuffer.toString();
+    }
+
 }
