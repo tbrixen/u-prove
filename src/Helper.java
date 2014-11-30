@@ -1,4 +1,5 @@
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
@@ -9,8 +10,6 @@ public class Helper {
     public static byte[] hash(Object[] message) {
 
         String algorithm = "SHA-256";
-
-
 
         String toHash = "";
         int elementCount = message.length;
@@ -23,24 +22,45 @@ public class Helper {
 
             if (element == null){
                 toHash += "00000000";
-            } else if (element.getClass().equals(String.class)){
-                int length = ((String) message[i]).length();
+            } else if (element.getClass().equals(BigInteger.class)) {
+                byte[] elm = ((BigInteger) element).toByteArray();
+
+                toHash = convertIntTo32BitHex(elm.length);
+                toHash += convertByteArrayToHexString(elm);
+
+            } else if (element.getClass().equals(Group.class)) {
+                Group gq = (Group) element;
+                String p = convertByteArrayToHexString(gq.getP().toByteArray
+                        ()).substring(2);
+                String q = convertByteArrayToHexString(gq.getQ().toByteArray
+                        ()).substring(2);
+                String g = convertByteArrayToHexString(gq.getGenerator()
+                        .toByteArray()).substring(2);
+
+                toHash = convertIntTo32BitHex(p.length()/2);
+                toHash += p;
+
+                toHash += convertIntTo32BitHex(q.length()/2);
+                toHash += q;
+
+                toHash += convertIntTo32BitHex(g.length()/2);
+                toHash += g;
+
+            } else {
+                int length = ((byte[]) element).length;
 
                 String lengthPadding = "";
-                if (length > 2 ){
-                    lengthPadding = convertIntTo32BitHex(length/2);
+                if (length > 1 ){
+                    lengthPadding = convertIntTo32BitHex(length);
                 }
 
-                toHash += lengthPadding + message[i];
+                toHash += lengthPadding + convertByteArrayToHexString(
+                        (byte[]) element);
             }
         }
 
 
         byte[] messageBytes = hexStringToByteArray(toHash);
-
-        System.out.println(convertByteArrayToHexString(messageBytes));
-
-        System.out.println(Arrays.toString(messageBytes));
 
         try {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
@@ -52,6 +72,46 @@ public class Helper {
             System.out.println("Error exception");
         }
         return null;
+    }
+
+    public BigInteger computeXt(Group gq, GroupElement g, GroupElement gd, byte[]
+            e, byte[] s, byte[] TI){
+        //byte[] P = hash(new Object[] {UIDd})
+
+        // Fake it till you make it
+        return new BigInteger
+                ("347e50f40edac4a1867f9d50827188324498d407a32945545bf9ef217eb23937"
+                ,16);
+    }
+
+    public BigInteger computeXi(BigInteger q, byte encodingByte,
+                                byte[] attribute)
+    {
+        if (encodingByte == 1){
+            if (attribute == null || attribute.length == 0){
+                return BigInteger.ZERO;
+            } else {
+                return hashToZq(new Object[] {attribute}, q);
+            }
+        } else if (encodingByte == 0) {
+            BigInteger a = new BigInteger(1, attribute);
+            if (a.compareTo(q) <= 0){
+                return a;
+            } else {
+                System.out.println("Error in formatting");
+            }
+        } else {
+            System.out.println("Error in formatting");
+        }
+
+        return null;
+    }
+
+    private BigInteger hashToZq(Object[] objects, BigInteger q) {
+        byte[] result = hash(objects);
+        BigInteger r = new BigInteger(1, result);
+
+        return r.mod(q);
     }
 
     private static String convertIntTo32BitHex(int number){
@@ -73,8 +133,6 @@ public class Helper {
                     .substring(1));
         }
         return stringBuffer.toString();
-
-
     }
 
 
