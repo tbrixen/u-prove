@@ -36,7 +36,7 @@ public class Issuer {
 
         // Generate y0
         y0 = zq.getRandomElement();
-        g0 = group.getGenerator().modPow(y0, group.getP());
+        g0 = group.getGenerator().modPow(y0, group.getQ());
 
 
     }
